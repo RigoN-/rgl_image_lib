@@ -23,8 +23,8 @@
 *~
 
 #Derictories
-extrn_doc/*
-extrn_example/*
-extrn_lib/*
+extern_doc/*
+extern_example/*
+extern_lib/*
 test/*
 lib/*
