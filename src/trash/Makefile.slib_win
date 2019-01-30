@@ -1,0 +1,22 @@
+CC = gcc
+AR = ar
+C_STD= gnu99
+STD = -std=$(C_STD)
+name = librglImage
+TARGET = ../lib/win/$(name).a
+INCS =  -I"../extern_include/" -I"../include/rglImage/"
+CFLAGS = $(INCS) -Wall -static -O2 -msse -msse2 -mfpmath=sse
+ARFLAGS = rcs
+LIBS = -ljpeg -lpng
+LDFLAGS = -L"." -static -Wl,-rpath,. $(LIBS)
+OBJ  = rglImage.o rglTexture.o
+
+%.o:%.c
+	$(CC) $(STD) $(CFLAGS) -c $^ -o $*.o $(LIBS)
+
+$(TARGET) : $(OBJ)
+	$(AR) $(ARFLAGS)  $@ -o $(OBJ)
+	del  *.o
+	
+clean:
+	del  -R -f  *.o

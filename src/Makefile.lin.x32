@@ -1,0 +1,99 @@
+CC = gcc
+C_STD=gnu99
+STD = -std=$(C_STD)
+OS =linux
+ARH = x32
+NAME = librglImage
+PATH_LIBS = ../lib/$(OS)/$(ARH)/
+LIBS = -lm
+D_LIB = -fPIC
+SHARED = -shared
+AR = ar
+ARFLAGS = rcs
+
+CFLAGS_STATIC = $(INCS) -Wall -O2 -msse -msse2 -mfpmath=sse
+CFLAGS_SHARED = $(INCS) $(D_LIB) -Wall -O2 -msse -msse2 -mfpmath=sse
+
+LDFLAGS_SHARED = $(SHARED) -L"." -Wl,-rpath,. $(LIBS)
+LDFLAGS_STATIC = -L"." -Wl,-rpath,. $(LIBS)
+
+TARGET_STATIC = $(PATH_LIBS)$(NAME)s.a
+TARGET_SHARED = $(PATH_LIBS)$(NAME).so
+
+
+OBJ_Z_STATIC = ./zlib/adler32.o ./zlib/crc32.o ./zlib/deflate.o \
+./zlib/infback.o ./zlib/inffast.o ./zlib/inflate.o \
+./zlib/inftrees.o ./zlib/trees.o ./zlib/zutil.o
+
+OBJ_PNG_STATIC = ./png/png.o ./png/pngset.o ./png/pngget.o ./png/pngrutil.o \
+./png/pngtrans.o ./png/pngwutil.o ./png/pngread.o ./png/pngrio.o  \
+./png/pngwio.o ./png/pngwrite.o ./png/pngrtran.o ./png/pngwtran.o \
+./png/pngmem.o ./png/pngerror.o ./png/pngpread.o 
+
+OBJ_JPG_STATIC =  ./jpeg/jaricom.o  ./jpeg/jcapimin.o  ./jpeg/jcapistd.o  ./jpeg/jcarith.o \
+ ./jpeg/jccoefct.o  ./jpeg/jccolor.o  ./jpeg/jcdctmgr.o  ./jpeg/jchuff.o  ./jpeg/jcinit.o \
+ ./jpeg/jcmainct.o  ./jpeg/jcmarker.o  ./jpeg/jcmaster.o  ./jpeg/jcomapi.o  ./jpeg/jcparam.o \
+ ./jpeg/jcprepct.o  ./jpeg/jcsample.o  ./jpeg/jctrans.o  ./jpeg/jdapimin.o  ./jpeg/jdapistd.o \
+ ./jpeg/jdarith.o  ./jpeg/jdatadst.o  ./jpeg/jdatasrc.o  ./jpeg/jdcoefct.o  ./jpeg/jdcolor.o \
+ ./jpeg/jddctmgr.o  ./jpeg/jdhuff.o  ./jpeg/jdinput.o  ./jpeg/jdmainct.o  ./jpeg/jdmarker.o \
+ ./jpeg/jdmaster.o  ./jpeg/jdmerge.o  ./jpeg/jdpostct.o  ./jpeg/jdsample.o  ./jpeg/jdtrans.o \
+ ./jpeg/jerror.o  ./jpeg/jfdctflt.o  ./jpeg/jfdctfst.o  ./jpeg/jfdctint.o  ./jpeg/jidctflt.o \
+ ./jpeg/jidctfst.o  ./jpeg/jidctint.o  ./jpeg/jquant1.o  ./jpeg/jquant2.o  ./jpeg/jutils.o \
+ ./jpeg/jmemmgr.o  ./jpeg/jmemnobs.o
+
+
+OBJ_Z_SHARED = ./zlib/adler32.lo ./zlib/crc32.lo ./zlib/deflate.lo \
+./zlib/infback.lo ./zlib/inffast.lo ./zlib/inflate.lo \
+./zlib/inftrees.lo ./zlib/trees.lo ./zlib/zutil.lo
+
+OBJ_PNG_SHARED = ./png/png.lo ./png/pngset.lo ./png/pngget.lo ./png/pngrutil.lo \
+./png/pngtrans.lo ./png/pngwutil.lo ./png/pngread.lo ./png/pngrio.lo  \
+./png/pngwio.lo ./png/pngwrite.lo ./png/pngrtran.lo ./png/pngwtran.lo \
+./png/pngmem.lo ./png/pngerror.lo ./png/pngpread.lo 
+
+OBJ_JPG_SHARED =  ./jpeg/jaricom.lo  ./jpeg/jcapimin.lo  ./jpeg/jcapistd.lo  ./jpeg/jcarith.lo \
+ ./jpeg/jccoefct.lo  ./jpeg/jccolor.lo  ./jpeg/jcdctmgr.lo  ./jpeg/jchuff.lo  ./jpeg/jcinit.lo \
+ ./jpeg/jcmainct.lo  ./jpeg/jcmarker.lo  ./jpeg/jcmaster.lo  ./jpeg/jcomapi.lo  ./jpeg/jcparam.lo \
+ ./jpeg/jcprepct.lo  ./jpeg/jcsample.lo  ./jpeg/jctrans.lo  ./jpeg/jdapimin.lo  ./jpeg/jdapistd.lo \
+ ./jpeg/jdarith.lo  ./jpeg/jdatadst.lo  ./jpeg/jdatasrc.lo  ./jpeg/jdcoefct.lo  ./jpeg/jdcolor.lo \
+ ./jpeg/jddctmgr.lo  ./jpeg/jdhuff.lo  ./jpeg/jdinput.lo  ./jpeg/jdmainct.lo  ./jpeg/jdmarker.lo \
+ ./jpeg/jdmaster.lo  ./jpeg/jdmerge.lo  ./jpeg/jdpostct.lo  ./jpeg/jdsample.lo  ./jpeg/jdtrans.lo \
+ ./jpeg/jerror.lo  ./jpeg/jfdctflt.lo  ./jpeg/jfdctfst.lo  ./jpeg/jfdctint.lo  ./jpeg/jidctflt.lo \
+ ./jpeg/jidctfst.lo  ./jpeg/jidctint.lo  ./jpeg/jquant1.lo  ./jpeg/jquant2.lo  ./jpeg/jutils.lo \
+ ./jpeg/jmemmgr.lo  ./jpeg/jmemnobs.lo
+
+
+
+OBJ_RGLIMAGE_STATIC  = rglBmp.o rglTga.o  rglPng.o  rglJpeg.o rglImage.o 
+OBJ_RGLIMAGE_SHARED  = rglBmp.lo rglTga.lo  rglPng.lo  rglJpeg.lo rglImage.lo 
+
+
+%.o:%.c
+	$(CC) $(STD) $(CFLAGS_STATIC) -c $^ -o $*.o $(LIBS)
+
+%.lo:%.c
+	$(CC) $(STD) $(CFLAGS_SHARED) -c $^ -o $*.lo $(LIBS)
+
+ALL: $(TARGET_STATIC) $(TARGET_SHARED)
+
+
+$(TARGET_STATIC): $(OBJ_Z_STATIC) $(OBJ_PNG_STATIC) $(OBJ_JPG_STATIC) $(OBJ_RGLIMAGE_STATIC)
+	$(AR) $(ARFLAGS)  $@ $(OBJ_Z_STATIC) $(OBJ_PNG_STATIC) $(OBJ_JPG_STATIC) $(OBJ_RGLIMAGE_STATIC)
+	rm  -R -f  ./zlib/*.o
+	rm  -R -f  ./png/*.o
+	rm  -R -f  ./jpeg/*.o
+	rm  -R -f   *.o
+
+$(TARGET_SHARED): $(OBJ_Z_SHARED) $(OBJ_PNG_SHARED) $(OBJ_JPG_SHARED) $(OBJ_RGLIMAGE_SHARED)
+	$(CC) $(STD) $(LDFLAGS_SHARED) -o $@ $(OBJ_Z_SHARED) $(OBJ_PNG_SHARED) $(OBJ_JPG_SHARED) $(OBJ_RGLIMAGE_SHARED)
+	rm  -R -f  ./zlib/*.lo
+	rm  -R -f  ./png/*.lo
+	rm  -R -f  ./jpeg/*.lo
+	rm  -R -f   *.lo
+
+clean:
+	rm  -R -f  ./zlib/*.o
+	rm  -R -f  ./png/*.o
+	rm  -R -f  ./jpeg/*.o
+	rm  -R -f   *.o
+	rm  -R -f   *.lo

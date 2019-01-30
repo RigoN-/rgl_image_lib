@@ -1,5 +1,7 @@
-# Object files
-*.o
+.gitignore
+
+# Ignore objects and archives.
+*.[oa]
 *.ko
 
 # Libraries
@@ -16,3 +18,13 @@
 *.exe
 *.out
 *.app
+
+#Tempory foles
+*~
+
+#Derictories
+extrn_doc/*
+extrn_example/*
+extrn_lib/*
+test/*
+lib/*
