@@ -1,1 +1,0 @@
-The files in this folder are not needed to compile the libJPEG library on a 32 bit Windows operating system.  You may need to use another jmem*.c file on another operating system.  The remaining C and C++ files are stand alone utilities or examples.
